@@ -4,3 +4,8 @@ __pycache__/
 .venv/
 venv/
 .env
+runs/
+*.pth
+*.zip
+.ipynb_checkpoints/
+data/*.csv
