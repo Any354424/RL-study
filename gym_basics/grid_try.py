@@ -1,11 +1,11 @@
-from gridworld_env import GridWorldEnv
+from gridworld_random_env import GridWorldRandomEnv
 
-env = GridWorldEnv()
+env = GridWorldRandomEnv()
 obs, info = env.reset(seed=0)
 print("起点:", obs)
 
 # 手写一条路：右、右、下、下  → s1→s2→s3→s6→s9
-path = [2,2,1,1]
+path = [1,1,2,2]
 total = 0.0
 gamma = 0.9
 
