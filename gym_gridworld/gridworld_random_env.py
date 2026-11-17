@@ -23,11 +23,8 @@ class GridWorldRandomEnv(gym.Env):
     #下面开始定义世界
 
     #格子说明（按编号 0-side*side）起始位置，目标规划，陷阱惩罚
-    side=3
-    start_idx = 0
-    goal_state = 8
     trap_state = 6
-
+    start_idx= 0
     # 动作：0上 1右 2下 3左 4不动
     moves = [(-1, 0), (0, 1), (1, 0), (0, -1), (0, 0)]
 
@@ -37,6 +34,9 @@ class GridWorldRandomEnv(gym.Env):
         self.render_mode = render_mode  #渲染？可视化的什么模式
         self.random_start=random_go  #是否开始随机
         self.side=side
+        self.n = side * side
+        self.goal_state = self.n - 1        # 右下角：24
+        self.trap_state = side * (side - 1)  # 左下角：20
         self.observation_space = spaces.Discrete(self.side * self.side)     #可观测到的集合，一个9
         self.action_space = spaces.Discrete(5)  #行动的集合，一共5
         self.cell_reward = np.zeros((side*side,),dtype=int)   #把格子的奖励移到这里面，如果需要修改某一个实例的奖励，避免污染
@@ -49,7 +49,10 @@ class GridWorldRandomEnv(gym.Env):
     # ---------- 核心接口 ----------
     def reset(self, seed=None, options=None): #重置步数step
         super().reset(seed=seed)
-        self._pos = self.start_idx  #将位置转为初始位置start_index
+        if self.random_start:   #(如果开启了随机选项)
+            self._pos = int(self.np_random.integers(0, self.side**2 - 1))  #随机起点，除了终点都可以
+        else:
+            self._pos = self.start_idx  #将位置转为初始位置start_index
         self._steps = 0     #重置步数step
         return self._obs(), {}  #返回初始化的位置
 
