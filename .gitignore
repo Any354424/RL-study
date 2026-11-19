@@ -9,3 +9,5 @@ runs/
 *.zip
 .ipynb_checkpoints/
 data/*.csv
+
+external/

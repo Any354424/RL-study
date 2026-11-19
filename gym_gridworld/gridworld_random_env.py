@@ -22,26 +22,37 @@ class GridWorldRandomEnv(gym.Env):
 
     #下面开始定义世界
 
-    #格子说明（按编号 0-side*side）起始位置，目标规划，陷阱惩罚
-    trap_state = 6
+    #格子说明（按编号 0-side*side）起始位置，目标规划，陷阱惩罚,下标从0开始
     start_idx= 0
     # 动作：0上 1右 2下 3左 4不动
     moves = [(-1, 0), (0, 1), (1, 0), (0, -1), (0, 0)]
 
-    def __init__(self, side=3,max_steps=50,random_go=False,render_mode=None):
+    def __init__(self, side=3,traps=None,trap_punish=-1,boundary_punish=-1,max_steps=50,random_go=False,render_mode=None):
         super().__init__()
         self.max_steps = max_steps  #规定最大迭代次数
         self.render_mode = render_mode  #渲染？可视化的什么模式
         self.random_start=random_go  #是否开始随机
-        self.side=side
-        self.n = side * side
-        self.goal_state = self.n - 1        # 右下角：24
-        self.trap_state = side * (side - 1)  # 左下角：20
+        self.side=side  #网格边长
+        self.n = side * side    #网格数
+        self.goal_state = self.n - 1    #目标在右下角
+        self.boundary_punish=boundary_punish
+        self.trap_punish=trap_punish     #陷阱惩罚
+        #下面是新加的可选陷阱，陷阱以{下标：惩罚}的字典传入
+        if traps is None:
+            traps = {side * (side - 1): trap_punish}
+        self.traps = dict(traps)
+        if self.goal_state in self.traps:
+            raise ValueError("陷阱不能放在终点格")
+        for idx in self.traps:
+            if not 0 <= idx < self.n:
+                raise ValueError(f"陷阱下标越界：{idx}")
+
         self.observation_space = spaces.Discrete(self.side * self.side)     #可观测到的集合，一个9
         self.action_space = spaces.Discrete(5)  #行动的集合，一共5
-        self.cell_reward = np.zeros((side*side,),dtype=int)   #把格子的奖励移到这里面，如果需要修改某一个实例的奖励，避免污染
+        self.cell_reward = np.zeros((side*side,),dtype=float)   #把格子的奖励移到这里面，如果需要修改某一个实例的奖励，避免污染
         self.cell_reward[self.goal_state]=1     #添加目的地奖励
-        self.cell_reward[self.trap_state]=-1    #添加陷阱格惩罚
+        for idx, r in self.traps.items():   #添加陷阱格惩罚
+            self.cell_reward[idx]=r
         self._pos = self.start_idx  #初始观察到的位置为start_idx
         self._steps = 0  #给初始步数0
         #上面那两个其实可以随便写，为了防止在reset前就被调用，这里选这两个参数是相当于提前reset了一次
@@ -63,7 +74,7 @@ class GridWorldRandomEnv(gym.Env):
 
         if not (0 <= nr < self.side and 0 <= nc < self.side):   # 撞墙
             nr, nc = r, c       #撤销运动
-            reward = -1.0       #给惩罚
+            reward = self.boundary_punish       #给惩罚
         else:
             reward = float(self.cell_reward[self._idx(nr, nc)])    #计算对应行动到达格子给的奖励
 
