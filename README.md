@@ -52,7 +52,7 @@
 已有实验使用 Windows、Python 3.13.9、Gymnasium 1.4.0、Stable-Baselines3 2.9.2 和 PyTorch 2.15.0（CPU）。在仓库根目录运行以下 PowerShell 命令。
 
 ```powershell
-py -3.13 -m venv .venv
+py -3 -m venv .venv
 $python = '.\.venv\Scripts\python.exe'
 & $python -m pip install -r requirements.txt
 
@@ -62,7 +62,9 @@ $python = '.\.venv\Scripts\python.exe'
 & $python gym_gridworld/PPO_gridworld.py
 ```
 
-随机轨迹搜索会打印本轮抽到的最佳路径和折扣回报，两个迭代脚本会打印状态价值。GridWorld PPO 脚本会打印每个格子的动作概率和状态价值，并把新生成的图和模型写到当前目录下的 `results/`。下文链接指向已有的实验图，保存在 `gym_gridworld/results/`。
+随机轨迹搜索会打印本轮抽到的最佳路径和折扣回报，两个迭代脚本会打印状态价值。GridWorld PPO 脚本会打印每个格子的动作概率和状态价值，并把新生成的图和模型写到当前目录下的 `results/`。
+
+下面提到的的实验图，保存在 `gym_gridworld/results/`。
 
 ## 网课代码
 
