@@ -18,7 +18,7 @@ while True:
             action_value.append(reward)
         best_action_value=max(action_value)
         v[i]=best_action_value
-        reset()
+        env.reset()
     count = 0
     for j in range(side*side):
         if abs(v[j]-v_old[j])<1e-6:

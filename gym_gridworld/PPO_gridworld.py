@@ -25,10 +25,11 @@ from gridworld_random_env import GridWorldRandomEnv
 
 side= 3  #修改模型
 random_go  = True  #是否随机
-TAG=f"{side}x{side}_{'random' if random_go else 'fixed'}"
+TAG=f"{side}x{side}_{'random' if random_go else 'fixed'}"   #总地址
 env = GridWorldRandomEnv(
     side=side,
     boundary_punish=-1,
+    traps={4,1},
     max_steps=50,
     random_go=random_go)
 model = PPO("MlpPolicy", env, seed=0, verbose=1)
