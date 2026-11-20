@@ -25,14 +25,17 @@ from gridworld_random_env import GridWorldRandomEnv
 
 side= 3  #修改模型
 random_go  = True  #是否随机
-TAG=f"{side}x{side}_{'random' if random_go else 'fixed'}"   #总地址
+seed=0  #PPO神经网络种子
+boundary_punish=-1  #边界惩罚
+max_steps=50    #最大步数
+TAG=f"{side}x{side}_{'random' if random_go else 'fixed'}_seed{seed}_bp{boundary_punish}_ms{max_steps}"   #总地址
 env = GridWorldRandomEnv(
     side=side,
-    boundary_punish=-1,
-    traps={4,1},
-    max_steps=50,
+    boundary_punish=boundary_punish,
+    traps={4: -1},
+    max_steps=max_steps,
     random_go=random_go)
-model = PPO("MlpPolicy", env, seed=0, verbose=1)
+model = PPO("MlpPolicy", env, seed=seed, verbose=1)
 model.learn(total_timesteps=100_000)
 
 os.makedirs("results", exist_ok=True)

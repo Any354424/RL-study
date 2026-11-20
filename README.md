@@ -41,7 +41,7 @@
 | 6   | `gym_gridworld/gridworld_env.py`        | 初步接触gym，尝试让之前写的网格世界根据[Env - Gymnasium 文档 - Gymnasium 文档](https://gymnasium.org.cn/api/env/)变成标准环境 |
 | 7   | `gym_gridworld/grid_try.py`             | 调用自己写的环境，让他走了指定的一条路，反馈和调用没有问题                                                                     |
 | 8   | `gym_gridworld/grid_try_fail.py`        | 试图用环境写一个值迭代，但是用环境写不是很支持值迭代所需的动作和反馈，强行写太麻烦，最后放弃去看PPO了，这是环境的标准用法                                    |
-| 9   | `gym_basics/train_cartpole.py`          | 让AI写了一个先拿别人的环境跑通的流程                                                                               |
+| 9   | `gym_basics/train_cartpole.py`          | 先拿别人的环境跑通的流程看看怎么用                                                                                 |
 | 10  | `gym_gridworld/gridworld_random_env.py` | 根据需求扩写了之前的那个环境，并添加了许多可以修改的值，使得调用的时候有更多可选                                                          |
 | 11  | `gym_gridworld/PPO_gridworld.py`        | 让 PPO 自己学习最优路径，可视化了结果                                                                             |
 
