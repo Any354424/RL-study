@@ -34,7 +34,7 @@ if __name__ == "__main__":
             best_a = int(np.argmax(action_value_set)) + 1   #最大值的索引+1
             old_a = policy[(i.x, i.y)]      #修改字典
             # 如果新动作没有比原来更好（并列），就保留原来的动作
-            if action_value_set[best_a - 1] - action_value_set[old_a - 1] > 1e-12:
+            if action_value_set[best_a - 1] - action_value_set[old_a - 1] > 1e-6:
                 new_policy[(i.x, i.y)] = best_a
             else:
                 new_policy[(i.x, i.y)] = old_a
