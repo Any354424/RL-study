@@ -32,11 +32,13 @@ def mc_sample(episode_num,policy):
             obs_past=obs    #记录当前位置
             obs, reward, terminated, truncated, info = env.step(policy[obs_past])   #走
             trajectory.append((obs_past,policy[obs_past], reward))  #添加记录
-        G=0     #return
-        for s, a, reward in reversed(trajectory):   #倒序取值，用return直接加
-            G = reward + gamma * G
-            sum_value[s][a]+=G      #every_visit
-            run_count[s][a]+=1      #记录数量
+        times = 0
+        G = 0
+        for s, a, reward in trajectory:
+            G += reward * gamma ** times
+            times += 1      #记录数量
+        sum_value[s0][a0] += G
+        run_count[s0][a0] += 1
     for s in range(side*side-1):
         for a in range(5):
             action_value[s][a]=sum_value[s][a]/run_count[s][a]
