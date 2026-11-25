@@ -27,16 +27,21 @@ class GridWorldRandomEnv(gym.Env):
     # 动作：0上 1右 2下 3左 4不动
     moves = [(-1, 0), (0, 1), (1, 0), (0, -1), (0, 0)]
 
-    def __init__(self, side=3,traps=None,trap_punish=-1,boundary_punish=-1,max_steps=50,random_go=False,render_mode=None):
+    #传入提醒：traps为一个{位置：惩罚}的字典，起点是一个数字下标
+    def __init__(self,side=3,max_steps=50,  #环境基础设置
+                 traps=None,trap_punish=-1,boundary_punish=-1,  #陷阱与边界惩罚
+                 random_start=False,random_state_transfer=False,    #随机开关：起点，状态转移，奖励
+                 render_mode=None,):
         super().__init__()
         self.max_steps = max_steps  #规定最大迭代次数
         self.render_mode = render_mode  #渲染？可视化的什么模式
-        self.random_start=random_go  #是否开始随机
+        self.random_start=random_start  #是否开始随机起点
         self.side=side  #网格边长
         self.n = side * side    #网格数
         self.goal_state = self.n - 1    #目标在右下角
         self.boundary_punish=boundary_punish
         self.trap_punish=trap_punish     #陷阱惩罚
+
         #下面是新加的可选陷阱，陷阱以{下标：惩罚}的字典传入
         if traps is None:
             traps = {side * (side - 1): trap_punish}
@@ -58,10 +63,13 @@ class GridWorldRandomEnv(gym.Env):
         #上面那两个其实可以随便写，为了防止在reset前就被调用，这里选这两个参数是相当于提前reset了一次
 
     # ---------- 核心接口 ----------
-    def reset(self, seed=None, options=None): #重置步数step
+    def reset(self, seed=None, options=None): #重置步数step,返回原位
         super().reset(seed=seed)
-        if self.random_start:   #(如果开启了随机选项)
-            self._pos = int(self.np_random.integers(0, self.side**2 - 1))  #随机起点，除了终点都可以
+        options = options or {}
+        if "start_state" in options:    # MC Basic 指定了起点
+            self._pos = int(options["start_state"])     #输入{start_state：0}这样的字典
+        elif self.random_start:  # 随机起点
+            self._pos = int(self.np_random.integers(0, self.n - 1))
         else:
             self._pos = self.start_idx  #将位置转为初始位置start_index
         self._steps = 0     #重置步数step
